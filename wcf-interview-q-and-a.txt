@@ -1,0 +1,305 @@
+Wcf Faqs:
+---------
+
+1.what is WCF?
+   -it is technology given by microsoft as part of .net framework which provides an environment to  work with different distributed technologies given by microsoft by following unified programming  model.
+
+2.What is difference between webservices and wcf?
+    -webservices is set of specifications given by major companies  like microsoft,IBM,SAP .
+    -wcf is technology part of .net framework.
+    -We can create a service by following webservices specifications on WCF.
+
+3.what is Webservice?
+   -a service which is hosted on website or a service that can be consumed through web is called as     webservice.
+   -Webservice is created by following webservices specification(ws-*)
+ 
+4.what is wsdl?
+   -it is schema defination language which can describe complete webservice.
+   -By using WSDL document content one can create proxy.
+ 
+5.What is proxy?
+   -proxy is an application program which can work on behalf of another application.
+   -while consuming operations and data of service we need a proxy
+
+6.what is SOAP(Simple Object access protocol)?
+   
+  -Soap is  combination of HTTP and XML.
+   -between client and service communication will be carried out with the help of SOAP messages.
+
+7.What is .disco file?
+   -it is called as discovery file which provides link to wsdl document and link to service.
+
+8.What is UDDI(Universal description discovery integration) ?
+   -it is open specification which specifies how a service can be discovered and integrated with our application.
+
+9.What is UBR(UDDI business registry)?
+   -it is complete implementation of UDDI.
+   -it can be implemented as local UBR where in we can locate our services with local server for  company use.
+   -it also can be implemented as Public UBR,but this project has been stoped from 1st jan 2006.
+  -We can locate webservices through internet by using webservices search engine.
+
+10.What are the important parts of WCFService?
+  
+ -there are three important parts of WCFService
+    a)Serviceclass:
+     *************
+    -It provides complete implementation of operations and data of service.There will be only  service class in a service.   Service  class name also considered as service name.
+     all service contracts of service are implemented in service class.
+   
+   b)Endpoint:
+    ----------
+	  -it is communication point .Client can communicate with service with the help of endpoint only
+   c)Hosting Environment:
+    ---------------------
+     -it is an application which provides environment to run the service.
+     -on a single hosting application many services can be hosted.
+
+11.what are the important parts of EndPoint?
+
+  -there are three important parts in EndPoint
+    a)Address:
+	  --------
+	   -it is useful to locate service effectively.				
+	   -depending upon transmission protocol appropriate format must be used.
+       Http:
+       -----
+            http://localhost:8080/MyService
+        Tcp:
+        ----
+            net.tcp://localhost:8010/MyService
+        Namedpipe:
+        ----------
+             net.pipe://localhost/MyService
+        Msmq:
+        ------
+             net.msmq://<QueueName>/<address string>		
+     b)	Binding:
+        --------
+         -it specifies how to communicate with service.
+         -it mainly deals with 
+             *Transmission protocol
+             *Message format
+             *Security protocol.
+         -There are predefined bindings given by microsoft according to transmission protocol.
+         
+         Http:
+         -----
+             basicHttpBinding
+             wsHttpBinding
+             wsDualHttpBinding
+             wsFedrationBinding
+
+        Tcp:
+        ----
+              netTcpBinding
+              peerTcpBinding
+        
+         NamedPipe:
+         ----------
+               netNamedPipeBinding
+          Msmq:
+          -----   
+              netMsmqBinding
+              MsmqIntegrationBinding
+	 -we can create custom bindings also according to requirement.		  
+    c)Contract:
+      ---------
+        -it specifies what can be consumed from service.
+        -generally it will be service contract.
+		
+	
+12.What is MexPoint?
+      -it is also endpoint which is used to communicate with service for  consuming Metadata of service.
+      -Client application has to request for description of service through this mexpoint and based on meta data received, proxy will be generated.
+	
+13.What is the difference between endpoint and mexpoint?
+	  -Endpoint is used to request and consume operations and data of service.
+	  -mexpoint is used to request and consume metadata of service which is needed for proxy creation.
+	
+14.What are different bindings for mexpoint creation?
+	  -mexHttpBinding, mexTcpbinding, mexNamedPipeBinding.
+	
+15.What is the predefined contract for mexpoint?
+	   -IMetadataExchange.
+	
+16.What are different types of Hostings?
+   -There are three types of Hostings.
+     *IIS Hosting:
+      ------------
+            -here service is hosted on one of website which is running on IIS 6.0 or more.
+            -Service can be consumed like a webservice.
+            -it supports only Http but not other protocols.
+      *Self Hosting:
+      --------------
+              -Here service can be hosted on any one of .net enabled application i.e console app,Winforms app,Wpf app or Windows Service. 
+            -Service can be consumed like a remoting service.
+              -all protocols are supported.
+                 *WAS hosting:
+                    ------------
+	 -It is also like IIS hosting but it takes support form windows process activation service which is part of windows operating system.
+              -Here service can be consumed as webservice or remote service with in .net applications and consumed like a webservice in non .net applications.
+              -all protocols are supported.			  
+	
+17.What are different protocols supported in wcf service?
+       -Http
+       -Tcp
+       -NamedPipe
+       -Msmq
+      -wcf service is extendible.i.e for new protocol also it can be extended with out effecting behaviour of service. 
+
+18.What are the different types of contracts?
+    
+     *ServiceContract:
+     -----------------
+       -it provide information regarding operations provided by service that is to exchanged between client and service.
+      -There can be more than one service contract in a service.
+     *DataContract:
+      -------------
+        -it provides information regarding Data that is to be exchanged between client and wcfservice.
+        -serialization and deserialization can be carried out by using predefined serializer called datacontract serializer.
+     *MessageContarct:
+     -----------------	 
+	  -it provides information regarding Data that is to be exchanged between client and wcfservice.But information will be directly embedded with in soap messages.
+	  
+     *FaultContract:
+     ---------------
+	     -It provides information regarding runtime error(Exception) that is to be exchanged between client and wcfservice.
+
+19.How Many endpoints can be created for wcfservice?
+   -many
+
+20.How many mexpoints can be created for service?
+   -many
+   
+21.What are the different types of exceptions in WCFService?
+  -There are three types of exceptions.
+    *CommunicationException:
+     -----------------------
+      -it will be raised when there is problem with network or service already closed or service address is mentioned wrongly.
+    
+    *ObjectDisposedException:
+    -------------------------
+     -it will be raised when request has been made after closing proxy or binding mismatch.
+    *FaultExceeption:
+    -----------------
+     -it is runtime error produced while processing request due to input provided.
+	 
+22.What are different context modes supported by wcfservice?
+
+ -Context mode specifies the life time of service class Object.
+ -There are three context modes.
+    *percall:
+    ---------
+       -for every request made by client service class object is created and get destroyed once processing of request completed.
+		
+    *persession:
+    ------------
+       -for every client separate instance of service class will be maintained.so that all requests from  that client will be handled by same instance of service class.
+
+    *Singleton:
+    -----------
+       -for all clients single instance of service class will be maintained .so that changes made due to one client will be reflected to other client also.
+
+23.what are different message patterns supported in WcfService?
+
+   -there are three message patterns 
+  *simplex :
+	----------
+	     -client can make request with out expecting response from service.
+	*Reques-reply :
+	---------------
+	     -client makes a request and wait for response from service.
+		  
+	*duplex message pattern :
+	------------------------
+	     -it is two way communication between client and wcfservice.i.e client makes a request to service and service also makes a request to client to send response.
+		 
+24.What is DataContractSerializer and How its different from XmlSerializer?
+
+       -Serialization is the process of converting an object instance to a portable and transferable format. 
+       -DataContractSerializer is about 10% faster than XmlSerializer but it has almost no control over how the object will be serialized. If we wanted to have more control over how object should be serialized that XmlSerializer is a better choice. 
+
+25.Which standard binding could be used for a service that was designed to replace an existing ASMX web service?
+         -The basicHttpBinding standard binding is designed to expose a service as if it is an     ASMX/ASP.NET web service. This will enable us to support existing clients as applications are         upgrade to WCF. 
+
+26.Please explain different modes of security in WCF? Or Explain the difference between Transport and Message Level Security.
+
+       -we can configure to use security at different levels 
+        - Transport Level security means providing security at the transport layer itself. When    dealing with security at Transport level, we are concerned about integrity, privacy and   authentication   of message as it travels along the physical wire. It depends on the binding being used that how WCF   makes it secure because most of the bindings have built-in security. 
+         <netTcpBinding>
+            <binding name="netTcpTransportBinding">
+               <security mode="Transport">
+                          <Transport clientCredentialType="Windows" />
+               </security>
+            </binding>
+            </netTcpBinding>
+
+        -Message Level Security For Tranport level security, we actually ensure the transport that is  being used should be secured but in message level security, we actually secure the message. We  encrypt the message before transporting it. 
+            <wsHttpBinding>
+             <binding name="wsHttpMessageBinding">
+               <security mode="Message">
+                           <Message clientCredentialType="UserName" />
+               </security>
+              </binding>
+             </wsHttpBinding>
+
+          --It totally depends upon the requirements but we can use a mixed security mode also as follows: 
+              <basicHttpBinding>
+             <binding name="basicHttp">
+               <security mode="TransportWithMessageCredential">
+                          <Transport />
+                               <Message clientCredentialType="UserName" />
+               </security>
+             </binding>
+             </basicHttpBinding>
+			 
+27.What is REST?
+     -Rest is an architectural style which says “Use the existing features of the web in more effective, efficient and simpler manner”.
+        Features like
+        •HTTP has support for verbs like GET,POST,DELETE and POST
+        •In HTTP world every resource will be identified by a URI
+        •In order to transmit data across XML is not the only way. We can even have JSON and  many more.
+
+28.What is mean by HTTP REST services and WCF REST Services?
+     -Services which are created considering this features into mind are called HTTP REST services and Microsoft’s implementation of HTTP REST is called WCF REST services.
+
+29.what is Problem with WCF REST and how it is solved? 
+    -Main idea behind WCF was to support SOA not to support REST. That’s why in order to create HTTP REST service using WCF require lots of configuration which is a tedious task. Microsoft wanted something simpler and finally it came up with one which has been made the part of Asp.NET itself       and that is called as Asp.NET Web API.
+	 
+30.What are dead letter queues?
+   
+   -The main use of queue is that you do not need the client and the server running at one time. Therefore it is possible that a message will lie in queue for long time until the server or client picks it up. But there are scenarios where a message is no use after a certain time.
+
+31.What are the advantages of WCF?
+    - WCF is interoperable with other services when compared to .Net
+    -Remoting,where the client and service have to be .Net.
+    -WCF services provide better reliability and security in compared to ASMX web services.
+    -In WCF, there is no need to make much change in code for implementing the security model and changing the binding.
+    -WCF has integrated logging mechanism, changing the configuration file settings will provide this    functionality.
+
+32.What are the features of WCF?
+  
+  *Transactions :
+       A transaction is a unit of work. A transaction ensures that everything with in  that  transaction either succeeds as a whole or fails as whole.
+  *Hosting : 
+        WCF hosting allows services to be hosted in a handful of different environments,  such as  Windows NT Services, Windows Forms, and console applications, and well as IIS (Internet Information Services) and Windows Activation Services (WAS).
+  *Security :
+        WCF also enables you to integrate your application into an existing security infrastructure, including those that extend beyond the standard Windows-only environments by using secure SOAP messages.
+  *Queuing : 
+        WCF enables queuing by providing support for the MSMQ transport.
+
+33.What are the types of performance counters? 
+   There are three types of performance counters :
+      -Service
+      -Endpoint
+      -Operation
+
+34.Can we have two-way communications in MSMQ?
+   -yes
+
+35.What are Volatile queues?
+    -There are scenarios in the project when you want the message to deliver in proper time. The timely delivery of message is very more important and to ensure they are not lost is important         too. Volatile queues are used for such purposes.
+
+36.What is a poison message? 
+    -Poison messages are messages that can not be processed. If they stay on top of a queue other messages will never get a chance. This could happen in any architecture involving first-in first-out queues, including MSMQ.  
+  
