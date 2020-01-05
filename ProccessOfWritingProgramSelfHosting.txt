@@ -1,0 +1,132 @@
+How TO Write And Execute this Example
+
+Hai We are creating the simple wcf Application For SelfHosting
+For that simply we are follow below steps
+
+1.Open the VS12
+2.Goto File menu then select New WebSite
+3.Give the path where you want to save  and with what name 
+ Here
+ WCFPractice is the name given by me then press enter
+ (here you can observe the file web.config is generated automatically)
+
+4.Now WCFPractice website is created give Right click on the WCFPractice then Add new Item
+ Now Select the Classlibrary and give the name for It.
+ this is the file with extension .cs
+ here
+ WCFService.cs is the name Given by me then press enter 
+ (Here you can Observe Class1.cs is generated Automatically)
+
+5.Now Add the References system.ServiceModel,System.Runtime.Serialisation
+ And Import these 2 namespaces in Class1.cs like as follows
+
+using System.ServiceModel;
+using System.Runtime.Serialization;
+
+6.Now write the code in Class1.cs  
+
+namespace WCFService
+{
+    public class Class1
+    {
+        
+    }
+    [ServiceContract]
+    public interface IMathService
+    {
+        [OperationContract]
+        int Add(int a, int b);
+        [OperationContract]
+        int Mul(int a, int b);
+    }
+    public class MathService:IMathService
+    {
+
+        public int Add(int a, int b)
+        {
+            return a + b;
+            //throw new NotImplementedException();
+        }
+
+        public int Mul(int a, int b)
+        {
+            return a * b;
+            //throw new NotImplementedException();
+        }
+    }
+}
+
+ 
+ Client Application
+ =============
+
+7.For doing this i simply taking the WindowssForm Application 
+ for that  Give right Click on the Solution'WCFPractice' then Add New Project
+ Select WindowsFormApplication
+8.Give Name to the Application (here WCFSelfHostTestApp ) 
+ AND give the path where you want to save the application should be
+9.Some Files are Automatically generated 
+ And add the reference by giving the click on references System.ServiceModel ,System.Runtime.Serialisation
+ 
+  Add 2 Buttons,one label name it as btnOpen,btnClose,lbl
+  Text: Open ,Close,empty respectively
+  then Write the Following Code
+
+using System.ServiceModel;
+
+namespace WCFSelfHostTestApp
+{
+    public partial class Form1 : Form
+    {
+        ServiceHost sh = null;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            sh = new ServiceHost(typeof(WCFService.MathService));
+            sh.Open();
+            //lbl.Text = sh.State.ToString();
+            Console.WriteLine("Status:"+sh.State);
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            sh.Close();
+            //lbl.Text = sh.State.ToString();
+            Console.WriteLine("Status:"+sh.State);
+
+        }
+    }
+}
+
+10. In App.Config File Write the below code in <Configuaration> 
+
+<system.serviceModel>
+    <services>
+      <service name="WCFService.MathService" behaviorConfiguration="mdata">
+        <host>
+          <baseAddresses>
+            <add baseAddress="http://localhost:49173/MathService"/>
+          </baseAddresses>
+        </host>
+        <endpoint address="" binding="wsHttpBinding" contract="WCFService.IMathService"></endpoint>
+        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange"></endpoint>
+      </service>
+    </services>
+    <behaviors>
+      <serviceBehaviors>
+        <behavior name="mdata" >
+          <serviceMetadata httpGetEnabled="false" httpGetUrl=""/>
+        </behavior>
+      </serviceBehaviors>
+    </behaviors>
+  </system.serviceModel>
+
+  </Configuaration>
+10.Now you can Build this Application after successful building
+ Give right click on the "WCFSelfHostTestApp" and set as startup Page
+ 
+11. Now You Build the application with this option "Start Without Debugging ctrl+F5"  
