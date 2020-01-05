@@ -1,0 +1,183 @@
+First of all we want to  know how do we create wcf project then how to give it to client
+
+
+Take new project or website as per requirement
+here i'm taking a new project naming as Wcf Service . this is a class library file  it will
+generate one class.cs file
+
+here what will do this WcfService??
+WcfService is the service provider means the logic for the requirement will be done in this area..
+Some times we will take new website, then we will add WcfService template which will generate the Service.svc, in this 2 files (Service.cs, IService.cs) are generated automatically
+
+Here i took classLibrary So i just writing the interface and implenting the class as follows 
+===========================================================
+Instance Context modes (Selfhosting)
+
+Add New Project-->C#
+Select Class Library Give Some meaningful Name to that and Specify the path
+then okay
+Add two references
+using System.ServiceModel;
+using System.Runtime.Serialization;
+
+then Write the Following Code in Class1.cs
+namespace WcfService
+{  
+    [ServiceContract]
+    public interface IMyService
+    {
+        [OperationContract]
+        public int MyMethod();
+    }
+    [ServiceBehavior(InstanceContextMode=InstanceContextMode.PerCall)]
+    public class MyService:IMyService
+    {
+// here interface is implemented
+        int ctr = 0;
+        public int MyMethod()
+        {
+            ctr++;
+            return ctr;
+        }
+    }
+}
+
+
+this is the requirement this is the service we want to provide to the client
+=================================================
+
+Now, 
+	My WcfService needs to be Communicate with Client For that my service is to start the Service For that we are Simply taking a ConsoleApp or WindowsApp to Host the Service
+
+Add the New Project ConsoleApplication to the Solution and
+Name it As WcfServiceHostApp
+
+Add Reference System.ServiceModel
+And Add Reference WcfService
+
+Go to Add Reference-->Select Solution--->
+Select Project ---> WcfService and Select it then Ok
+
+Import one namespace using System.ServiceModel;
+then Open the ServiceHost
+
+Write the Following Code in Program.cs
+namespace WcfServicehostApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost sh = new ServiceHost(typeof(WcfService.MyService));
+            sh.Open();
+            Console.WriteLine("ServiceState:"+sh.State);
+            Console.WriteLine("Now Press anyKey to Close the connection:");
+            Console.WriteLine(Console.ReadLine());
+            sh.Close();
+            Console.WriteLine("ServiceState:"+sh.State);
+        }
+    }
+}
+Note:
+-->Here we are creating the ServiceHost.typeof(WcfService.MyService) means WcfService is
+the Service Name and MyService the Requirement(service classs) in Service
+if you dont Add the WcfService Reference it will shows the error at WcFService
+
+
+Now GoTo App.Config File Write the Below Code
+
+<system.serviceModel>
+    <services>
+      <service name="WcfService.MyService" behaviorConfiguration="mdata">
+        <host>
+          <baseAddresses>
+            <add baseAddress="http://localhost:8080/MyService"/>
+          </baseAddresses>
+        </host>
+        <endpoint address=""  binding="wsHttpBinding" contract="WcfService.IMyService"/>
+        <endpoint address="mex" contract="IMetadataExchange" binding="mexHttpBinding"/>
+      </service>
+    </services>
+    <behaviors>
+      <serviceBehaviors>
+        <behavior name="mdata">
+          <serviceMetadata httpGetEnabled="false" httpGetUrl=""/>
+        </behavior>
+      </serviceBehaviors>
+    </behaviors>
+  </system.serviceModel> 
+
+In Configuaration
+
+
+Now Build and Debug the Application By Making as the Startup Project
+Give Right Click On  WcfServiceHostApp ---> Set as Startup Project then 
+Start With out Debugging
+Service Is opened then Minimise it
+Keep it aside..
+==================================================================
+
+Now The Service Is Opened Hosting Is Completed
+
+Then our Service has to Communicate With Client for that 
+Add New Project ConsoleApplication you take whatever you want like webform, windows form
+
+Name it as WcfClientApp(Give what Ever You wish but meaningfull)
+
+Now,
+Program.cs is generated
+Add the 2 References
+and Import it
+
+using System.ServiceModel;
+using System.Runtime.Serialization;
+ Now Add Service Reference By Giving the url http://localhost:8080/MyService/mex or
+http://localhost:8080/MyService Then Go Service is Detected
+Give Some Name to It here i gave Proxy1 then Add
+
+Note That when you Add The Service reference to Client ServiceState Must be Opened
+
+And Same Give NAme it as Proxy2 then Add
+We Added 2 Proxys With this our Service is Going to Communicate with Client
+
+Write the Following Code in Program.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ServiceModel;
+using System.Runtime.Serialization;
+
+namespace WcfClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            proxy1.MyServiceClient obj = new proxy1.MyServiceClient();
+            Console.WriteLine("1st Call For Client1..." + obj.MyMethod());
+            Console.WriteLine("2nd Call For Client1..." + obj.MyMethod());
+            Console.WriteLine("3rd Call For Client1..." + obj.MyMethod());
+            Console.WriteLine("@@@@@@@@@@@@@@@**********@@@@@@@@@@@");
+            Proxy2.MyServiceClient obj1 = new Proxy2.MyServiceClient();
+            Console.WriteLine("1st Call For Client2..." + obj1.MyMethod());
+            Console.WriteLine("2nd Call For Client2..." + obj1.MyMethod());
+            Console.WriteLine("3rd Call For Client2..." + obj1.MyMethod());
+            Console.WriteLine("@@@@@@@@@@@@@@@PerCall@@@@@@@@@@@");
+        }
+    }
+}
+
+Make Startup Project as WcfClientApp Then Debug--> start Without Debugging
+
+According to The IndexContext Mode the Output is Generated 
+For Per Call
+1 1 1 1 1 1
+For Session
+1 2 3 1 2 3
+For Single
+1 2 3 4 5 6
+
+Note That when you Run the Application ServiceState Must be Opened             
