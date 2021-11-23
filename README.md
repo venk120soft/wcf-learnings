@@ -49,7 +49,7 @@ Basic and primary difference is, ASP.NET web service is designed to exchange SOA
 ## Why would someone breakdown the application into different tiers and why would they deploy into different machines?
 that is just to improve the scalability of the application
 
-## How do you make changes in WCF Service whithout breaking clients??
+## How do you make changes in WCF Service without breaking client(s)?
 
 Just use Name attribute with the service contract
 ```javascript
@@ -60,7 +60,7 @@ public interface IHelloService
 }
 
 /* And you all set the configuaration in App.config file like contract="HelloService.IHelloService"
-and debug look at WSDL document. In WSDl search for the portType
+and to debug, look at WSDL document. In WSDl search for the portType
 <wsdl: portType name="IHelloService">
 
 Once we change the interface name as below */
